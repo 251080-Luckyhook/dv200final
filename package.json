@@ -1,39 +1,32 @@
 {
-  "name": "dv200s2t2",
-  "version": "0.1.0",
+  "name": "ngwana-huis",
+  "version": "1.0.0",
   "private": true,
-  "dependencies": {
-    "@testing-library/dom": "^10.4.2",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.3",
-    "@testing-library/user-event": "^13.5.0",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
-    "react-scripts": "^5.0.1",
-    "web-vitals": "^2.1.4"
+  "description": "Ngwana Huis volunteer visit booking platform (React + Vite, Express, MongoDB Atlas)",
+  "engines": {
+    "node": ">=20"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "node backend/index.js",
+    "dev": "concurrently \"npm:dev:server\" \"npm:dev:frontend\"",
+    "dev:server": "nodemon backend/index.js",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "migrate": "node backend/migrate.js",
+    "heroku-postbuild": "npm install --prefix frontend --include=dev && npm run build --prefix frontend"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "google-auth-library": "^9.11.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.21.0",
+    "morgan": "^1.10.0"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.4"
   }
 }
