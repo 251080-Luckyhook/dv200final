@@ -75,12 +75,12 @@ Set `MONGODB_URI` to your Atlas connection string and optionally set `MONGODB_DB
 3. Set the app's Config Vars before deploying. Replace each placeholder with your real value:
 
 ```
-heroku config:set JWT_SECRET=<long-random-secret>
-heroku config:set MONGODB_URI="<your Atlas connection string>"
+heroku config:set JWT_SECRET="paste-generated-secret-here"
+heroku config:set MONGODB_URI="paste-your-Atlas-connection-string-here"
 heroku config:set MONGODB_DB=ngwana_huis
-heroku config:set GOOGLE_CLIENT_ID=<Google OAuth client ID>
-heroku config:set VITE_GOOGLE_CLIENT_ID=<same Google OAuth client ID>
-heroku config:set ADMIN_FULL_NAME="Your Name" ADMIN_EMAIL=you@example.com ADMIN_PASSWORD=<strong-password>
+heroku config:set GOOGLE_CLIENT_ID="paste-Google-OAuth-client-ID-here"
+heroku config:set VITE_GOOGLE_CLIENT_ID="paste-the-same-client-ID-here"
+heroku config:set ADMIN_FULL_NAME="Your Name" ADMIN_EMAIL=you@example.com ADMIN_PASSWORD="paste-a-strong-password-here"
 heroku config:set APP_TIMEZONE=Africa/Johannesburg
 ```
 
