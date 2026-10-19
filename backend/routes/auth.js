@@ -56,27 +56,40 @@ router.post(
   })
 );
 
-// Email/password login is available only for volunteer accounts.
+// Email or phone and password sign in volunteers and staff from the same form.
 router.post(
   '/login',
   wrap(async (req, res) => {
-    const { email, password } = req.body;
-    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+    const { identifier, email, password } = req.body;
+    const rawIdentifier = typeof identifier === 'string' ? identifier : email;
+    const normalizedIdentifier = typeof rawIdentifier === 'string' ? rawIdentifier.trim() : '';
 
-    if (!normalizedEmail || typeof password !== 'string' || !password) {
-      return res.status(400).json({ error: 'Enter your email address and password.' });
+    if (!normalizedIdentifier || typeof password !== 'string' || !password) {
+      return res.status(400).json({ error: 'Enter your email or phone number and password.' });
     }
 
-    const account = await mongoStore.getUserByEmail(normalizedEmail);
-    const passwordMatches =
-      account && account.role === 'volunteer' && account.passwordHash &&
-      (await bcrypt.compare(password, account.passwordHash));
+    const normalizedEmail = normalizedIdentifier.toLowerCase();
+    const accounts = await mongoStore
+      .getCollection('users')
+      .find({ $or: [{ email: normalizedEmail }, { phone: normalizedIdentifier }] })
+      .toArray();
+    const matchingAccounts = [];
 
-    if (!passwordMatches) {
-      return res.status(401).json({ error: 'Those details do not match a volunteer account.' });
+    for (const account of accounts) {
+      if (account.passwordHash && await bcrypt.compare(password, account.passwordHash)) {
+        matchingAccounts.push(account);
+      }
     }
 
-    const user = mongoStore.mapUser(account);
+    if (matchingAccounts.length !== 1) {
+      if (matchingAccounts.length > 1) {
+        return res.status(409).json({ error: 'More than one account matches those details. Please contact staff.' });
+      }
+
+      return res.status(401).json({ error: 'Those details do not match an account.' });
+    }
+
+    const user = mongoStore.mapUser(matchingAccounts[0]);
 
     return res.json({ token: signToken(user), user });
   })

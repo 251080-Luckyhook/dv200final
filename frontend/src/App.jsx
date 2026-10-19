@@ -6,6 +6,7 @@ import Layout from './components/Layout.jsx';
 
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
+import PublicHome from './pages/PublicHome.jsx';
 import VolunteerHome from './pages/VolunteerHome.jsx';
 import BookSession from './pages/BookSession.jsx';
 import MyVisits from './pages/MyVisits.jsx';
@@ -41,7 +42,7 @@ function RedirectHome() {
   }
 
   if (!user) {
-    return <Navigate to="/signup" replace />;
+    return <PublicHome />;
   }
 
   return <Navigate to={user.isStaff ? '/staff' : '/home'} replace />;

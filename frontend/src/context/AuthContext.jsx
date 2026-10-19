@@ -64,13 +64,8 @@ export function AuthProvider({ children }) {
     [finishLogin]
   );
 
-  const loginAsVolunteer = useCallback(
+  const login = useCallback(
     async (details) => finishLogin(await api.post('/auth/login', details)),
-    [finishLogin]
-  );
-
-  const loginAsStaff = useCallback(
-    async (details) => finishLogin(await api.post('/auth/admin-login', details)),
     [finishLogin]
   );
 
@@ -80,8 +75,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, setUser, loading, loginWithGoogle, registerVolunteer, loginAsVolunteer, loginAsStaff, logout }),
-    [user, loading, loginWithGoogle, registerVolunteer, loginAsVolunteer, loginAsStaff, logout]
+    () => ({ user, setUser, loading, loginWithGoogle, registerVolunteer, login, logout }),
+    [user, loading, loginWithGoogle, registerVolunteer, login, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

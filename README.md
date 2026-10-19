@@ -57,27 +57,48 @@ Set `MONGODB_URI` to your Atlas connection string and optionally set `MONGODB_DB
 
 ## How logins work
 
-- **Volunteers** can register with their name, email, and password or with Google. They can log in with either method and land on the volunteer dashboard.
-- **Staff** log in on the Log in page with full name, phone or email, and password. The first administrator is created by `npm run migrate` from `ADMIN_*` in `.env`.
+- The welcome page is public. Volunteers can register with their name, email, and password or with Google.
+- Volunteers and staff use the same Log in form with the email address or phone number and password on their account. The app sends each account to its volunteer or staff dashboard automatically.
+- The first administrator is created by `npm run migrate` from `ADMIN_*` in `.env`.
 - An administrator promotes volunteers in **Settings > Account Access** by choosing a role (nursery caregiver, volunteer coordinator or administrator).
 
 ## Deploy to Heroku
 
+1. Install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) and sign in:
+   ```
+   heroku login
+   ```
+2. Create an app (or use the name of an existing Heroku app):
+   ```
+   heroku create your-app-name
+   ```
+3. Set the app's Config Vars before deploying. Replace each placeholder with your real value:
+
 ```
-heroku create your-app-name
-heroku config:set JWT_SECRET=<long random string>
+heroku config:set JWT_SECRET=<long-random-secret>
 heroku config:set MONGODB_URI="<your Atlas connection string>"
 heroku config:set MONGODB_DB=ngwana_huis
-heroku config:set GOOGLE_CLIENT_ID=<id>
-heroku config:set VITE_GOOGLE_CLIENT_ID=<id>
-heroku config:set ADMIN_FULL_NAME="Your Name" ADMIN_EMAIL=you@example.com ADMIN_PASSWORD=<strong password>
+heroku config:set GOOGLE_CLIENT_ID=<Google OAuth client ID>
+heroku config:set VITE_GOOGLE_CLIENT_ID=<same Google OAuth client ID>
+heroku config:set ADMIN_FULL_NAME="Your Name" ADMIN_EMAIL=you@example.com ADMIN_PASSWORD=<strong-password>
 heroku config:set APP_TIMEZONE=Africa/Johannesburg
-git push heroku HEAD:main
 ```
 
-`VITE_GOOGLE_CLIENT_ID` must be set **before** the push, because Vite bakes it into the build. Heroku builds the React app (`heroku-postbuild`), runs `node backend/migrate.js` on release, and the Express server serves everything from one URL.
+Generate a strong JWT secret with `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`. Keep all secrets private. Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` if you want the release migration to create the first administrator; it does not overwrite an existing account.
 
-Heroku does not use the local `.env` files. Set these values as Heroku Config Vars instead (the example commands above do this); never commit secrets or upload `.env` files. Set `VITE_GOOGLE_CLIENT_ID` before deploying so it is available during the frontend build. The server requires `MONGODB_URI` and no SQL database.
+4. Add your Heroku app URL to the Google OAuth client's **Authorized JavaScript origins**. Use the same client ID for `GOOGLE_CLIENT_ID` and `VITE_GOOGLE_CLIENT_ID`.
+5. Push the current branch to Heroku:
+   ```
+   git push heroku HEAD:main
+   ```
+6. Check the deployment and open the app:
+   ```
+   heroku logs --tail
+   heroku open
+   ```
+   The API health check is available at `https://your-app-name.herokuapp.com/api/health`.
+
+Heroku does not use local `.env` files; configure values as Heroku Config Vars instead, and never commit or upload `.env` files. `VITE_GOOGLE_CLIENT_ID` must be set **before** the push because Vite embeds it in the frontend build. Heroku installs the frontend from its lockfile and builds it with `heroku-postbuild`, runs `npm run migrate` during the release phase, then starts the Express server with `npm start`. The Express server serves both the API and built frontend from the same app URL. MongoDB Atlas must be reachable from Heroku and `MONGODB_URI` is required.
 
 ## Things to swap in
 

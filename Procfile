@@ -1,2 +1,2 @@
-release: node backend/migrate.js
-web: node backend/index.js
+release: npm run migrate
+web: npm start
