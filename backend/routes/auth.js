@@ -197,3 +197,14 @@ router.get('/me', requireAuth, (req, res) => {
 });
 
 module.exports = router;
+
+const res = await fetch('/api/auth/register', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email, password }),
+});
+if (res.ok) {
+  window.gtag?.('event', 'sign_up', { method: 'email' });
+  navigate('/welcome');
+}
+

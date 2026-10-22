@@ -53,3 +53,13 @@ function requireAdmin(req, res, next) {
 }
 
 module.exports = { signToken, requireAuth, requireStaff, requireAdmin };
+
+const res = await fetch('/api/auth/register', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email, password }),
+});
+if (res.ok) {
+  window.gtag?.('event', 'sign_up', { method: 'email' });
+  navigate('/welcome');
+}
