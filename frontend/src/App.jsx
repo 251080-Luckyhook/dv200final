@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 
 import { useAuth } from './context/AuthContext.jsx';
 import Layout from './components/Layout.jsx';
+import AnalyticsConsent from './components/AnalyticsConsent.jsx';
 
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
@@ -64,50 +65,53 @@ export default function App() {
   }, [user, navigate]);
 
   return (
-    <Routes>
-      <Route path="/" element={<RedirectHome />} />
+    <>
+      <Routes>
+        <Route path="/" element={<RedirectHome />} />
 
-      <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
 
-      <Route path="/signup" element={<Signup />} />
+        <Route path="/signup" element={<Signup />} />
 
-      <Route
-        element={
-          <RequireAuth>
-            <Layout />
-          </RequireAuth>
-        }
-      >
-        <Route path="/home" element={<VolunteerHome />} />
+        <Route
+          element={
+            <RequireAuth>
+              <Layout />
+            </RequireAuth>
+          }
+        >
+          <Route path="/home" element={<VolunteerHome />} />
 
-        <Route path="/my-visits" element={<MyVisits />} />
+          <Route path="/my-visits" element={<MyVisits />} />
 
-        <Route path="/bookings" element={<BookSession />} />
+          <Route path="/bookings" element={<BookSession />} />
 
-        <Route path="/account" element={<SettingsPage initialTab="security" />} />
-      </Route>
+          <Route path="/account" element={<SettingsPage initialTab="security" />} />
+        </Route>
 
-      <Route
-        element={
-          <RequireAuth staffOnly>
-            <Layout staff />
-          </RequireAuth>
-        }
-      >
-        <Route path="/staff" element={<StaffHome />} />
+        <Route
+          element={
+            <RequireAuth staffOnly>
+              <Layout staff />
+            </RequireAuth>
+          }
+        >
+          <Route path="/staff" element={<StaffHome />} />
 
-        <Route path="/staff/bookings" element={<VisualCalendar />} />
+          <Route path="/staff/bookings" element={<VisualCalendar />} />
 
-        <Route path="/staff/volunteers" element={<ShiftBoard />} />
+          <Route path="/staff/volunteers" element={<ShiftBoard />} />
 
-        <Route path="/staff/reports" element={<ReportingHub />} />
+          <Route path="/staff/reports" element={<ReportingHub />} />
 
-        <Route path="/staff/account" element={<SettingsPage staff initialTab="security" />} />
+          <Route path="/staff/account" element={<SettingsPage staff initialTab="security" />} />
 
-        <Route path="/staff/settings" element={<SettingsPage staff initialTab="general" />} />
-      </Route>
+          <Route path="/staff/settings" element={<SettingsPage staff initialTab="general" />} />
+        </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+      <AnalyticsConsent />
+    </>
   );
 }
