@@ -20,16 +20,9 @@ export default function Sidebar({ staff }) {
     <aside className="sidebar">
       <Link to={staff ? '/staff' : '/home'} className="logo" aria-label="Ngwana Huis home">
         <img
-          src="/logo.png"
-          alt=""
-          onError={(event) => {
-            event.currentTarget.style.display = 'none';
-          }}
+          src="/logo-1.png"
+          alt="Ngwana Huis — Huis vir verlate babas / House for abandoned babies"
         />
-
-        <span className="logo-word">NGWANA HUIS</span>
-
-        <span className="logo-sub">Huis vir verlate babas / House for abandoned babies</span>
       </Link>
 
       <nav className="nav">
