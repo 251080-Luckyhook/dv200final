@@ -65,8 +65,9 @@ export default function AnalyticsConsent() {
           <div className="analytics-consent-copy">
             <h2>Help us improve Ngwana Huis</h2>
             <p>
-              Allow Google Analytics to collect usage data about visits to this site.
-              Analytics is optional and does not affect how you use the site.
+              Ngwana Huis website is a student project. We use cookies and Google Analytics to collect
+              usage data about visits to this site. Analytics is optional and does not affect
+              how you use the site.
             </p>
             {error && <p className="analytics-consent-error" role="alert">{error}</p>}
           </div>
