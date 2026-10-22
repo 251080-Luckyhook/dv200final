@@ -7,7 +7,7 @@ import AnalyticsConsent from './components/AnalyticsConsent.jsx';
 
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
-import PublicHome from './pages/PublicHome.jsx';
+import PublicHome from './pages/PublicHome2.jsx';
 import VolunteerHome from './pages/VolunteerHome.jsx';
 import BookSession from './pages/BookSession.jsx';
 import MyVisits from './pages/MyVisits.jsx';
