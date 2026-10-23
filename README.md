@@ -47,9 +47,11 @@ ngwana-huis/
 
 ### Google sign-in setup
 
-1. In Google Cloud Console, create an OAuth client of type **Web application**.
-2. Add `http://localhost:5173` and your Heroku URL under **Authorized JavaScript origins**.
-3. Put the client ID in `GOOGLE_CLIENT_ID` (root `.env`) and `VITE_GOOGLE_CLIENT_ID` (`frontend/.env`).
+1. In Google Cloud Console, configure the OAuth consent screen. While the app is in testing mode, add the Google accounts you will use under **Test users**.
+2. Create an OAuth client of type **Web application**.
+3. Add `http://localhost:5173` and your deployed app origin (for example, `https://your-app-name.herokuapp.com`) under **Authorized JavaScript origins**. This app uses Google's popup flow, so it does not need an authorized redirect URI.
+4. Copy the client ID to `GOOGLE_CLIENT_ID` in the root `.env` and `VITE_GOOGLE_CLIENT_ID` in `frontend/.env`. Use the same client ID in both files. The frontend example is `frontend/.env.example`.
+5. Restart the development server after changing either `.env` file. The **Log in with Google** and **Sign up with Google** buttons are on `/login` and `/signup`; both send Google's credential to the backend, which verifies it and returns the app's login token.
 
 ## MongoDB Atlas setup
 

@@ -11,6 +11,7 @@ export default function GoogleButton({ text }) {
 
   const [error, setError] = useState('');
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const buttonLabel = text === 'signup_with' ? 'Sign up with Google' : 'Sign in with Google';
 
   async function handleSuccess(response) {
     setError('');
@@ -35,7 +36,14 @@ export default function GoogleButton({ text }) {
           width="320"
         />
       ) : (
-        <p className="small">Google sign-in is unavailable until VITE_GOOGLE_CLIENT_ID is configured.</p>
+        <>
+          <button type="button" className="btn white block" disabled>
+            {buttonLabel}
+          </button>
+          <p className="small centered">
+            Configure VITE_GOOGLE_CLIENT_ID in frontend/.env to enable Google sign-in.
+          </p>
+        </>
       )}
 
       <Notice error={error} />

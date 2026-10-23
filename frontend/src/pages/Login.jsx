@@ -7,6 +7,8 @@ import BlobBackground from '../components/BlobBackground.jsx';
 import Notice from '../components/Notice.jsx';
 import GoogleButton from './GoogleButton.jsx';
 
+
+
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
