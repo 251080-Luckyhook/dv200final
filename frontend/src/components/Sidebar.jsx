@@ -1,5 +1,5 @@
 import { NavLink, Link } from 'react-router-dom';
-import { BarChart3, CalendarDays, Home, LogOut, Settings, User, Users, LayoutDashboard } from 'lucide-react';
+import { BarChart3, CalendarDays, Home, LogOut, Mail, Settings, User, Users, LayoutDashboard } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext.jsx';
 
@@ -44,6 +44,10 @@ export default function Sidebar({ staff }) {
               Reports
             </Item>
 
+            <Item to="/staff/messages" icon={Mail}>
+              Messages
+            </Item>
+
             <hr />
 
             <Item to="/staff/account" icon={User}>
@@ -66,6 +70,10 @@ export default function Sidebar({ staff }) {
 
             <Item to="/bookings" icon={CalendarDays}>
               Bookings
+            </Item>
+
+            <Item to="/messages" icon={Mail}>
+              Messages
             </Item>
 
             <hr />

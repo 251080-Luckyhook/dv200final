@@ -83,30 +83,50 @@ export default function MyVisits() {
   const [bookings, setBookings] = useState([]);
   const [history, setHistory] = useState({ totalHours: 0, byActivity: [] });
   const [feedback, setFeedback] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [notice, setNotice] = useState({ error: '', message: '' });
   const [showCancel, setShowCancel] = useState(false);
   const [rescheduling, setRescheduling] = useState(false);
 
-  const load = useCallback(async () => {
+  const loadCommunication = useCallback(async () => {
     try {
-      const [mine, hist, fb] = await Promise.all([
-        api.get('/bookings/mine'),
-        api.get('/bookings/history'),
+      const [fb, messageData] = await Promise.all([
         api.get('/feedback/mine'),
+        api.get('/feedback/messages'),
       ]);
 
-      setBookings(mine.bookings);
-      setHistory(hist);
       setFeedback(fb.feedback);
+      setMessages(messageData.messages);
     } catch (err) {
       setNotice({ error: err.message, message: '' });
     }
   }, []);
 
+  const load = useCallback(async () => {
+    try {
+      const [mine, hist] = await Promise.all([
+        api.get('/bookings/mine'),
+        api.get('/bookings/history'),
+      ]);
+
+      setBookings(mine.bookings);
+      setHistory(hist);
+      await loadCommunication();
+    } catch (err) {
+      setNotice({ error: err.message, message: '' });
+    }
+  }, [loadCommunication]);
+
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    const timer = window.setInterval(loadCommunication, 15000);
+
+    return () => window.clearInterval(timer);
+  }, [loadCommunication]);
 
   const today = todayISO();
 
@@ -124,8 +144,10 @@ export default function MyVisits() {
       setShowCancel(false);
 
       await load();
+      return true;
     } catch (err) {
       setNotice({ error: err.message, message: '' });
+      return false;
     }
   }
 
@@ -136,9 +158,11 @@ export default function MyVisits() {
       return;
     }
 
-    await run(() => api.post('/feedback/messages', { body: message }), 'Message sent to the staff.');
+    const sent = await run(() => api.post('/feedback/messages', { body: message }), 'Message sent to the staff.');
 
-    setMessage('');
+    if (sent) {
+      setMessage('');
+    }
   }
 
   function activityEmoji(key) {
@@ -230,6 +254,18 @@ export default function MyVisits() {
 
                 <small>{formatShort(item.createdAt.slice(0, 10))}</small>
 
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
+
+          <h3 className="message-history-title">Messages with staff</h3>
+          <div className="feedback-list message-history" aria-live="polite">
+            {messages.length === 0 && <p className="muted-text">Your messages to staff and their replies will appear here.</p>}
+            {[...messages].reverse().map((item) => (
+              <article key={item.id} className={`feedback-item message-item${item.fromMe ? ' from-me' : ''}`}>
+                <h3>{item.fromMe ? 'You' : item.sender || 'Ngwana Huis staff'}</h3>
+                <small>{formatShort(item.createdAt.slice(0, 10))}</small>
                 <p>{item.body}</p>
               </article>
             ))}

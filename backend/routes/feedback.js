@@ -44,6 +44,12 @@ router.post(
       return res.status(400).json({ error: 'Choose a volunteer and write your feedback.' });
     }
 
+    const volunteer = await mongoStore.getUserById(volunteerId);
+
+    if (!volunteer || volunteer.role !== 'volunteer') {
+      return res.status(404).json({ error: 'We could not find that volunteer.' });
+    }
+
     await mongoStore.getCollection('feedback').insertOne({
       volunteerId,
       authorId: req.user.id,
@@ -71,6 +77,14 @@ router.post(
       return res.status(400).json({ error: 'Choose who this message is for.' });
     }
 
+    if (req.user.isStaff) {
+      const volunteer = await mongoStore.getUserById(volunteerId);
+
+      if (!volunteer || volunteer.role !== 'volunteer') {
+        return res.status(404).json({ error: 'We could not find that volunteer.' });
+      }
+    }
+
     await mongoStore.getCollection('messages').insertOne({
       volunteerId,
       senderId: req.user.id,
@@ -83,12 +97,58 @@ router.post(
 );
 
 router.get(
+  '/messages/inbox',
+  requireStaff,
+  wrap(async (req, res) => {
+    const messages = await mongoStore.getCollection('messages')
+      .find({})
+      .sort({ createdAt: -1 })
+      .limit(100)
+      .toArray();
+
+    const volunteerIds = [...new Set(messages.map((message) => message.volunteerId))];
+    const senderIds = [...new Set(messages.map((message) => message.senderId).filter(Boolean))];
+    const [volunteers, senders] = await Promise.all([
+      Promise.all(volunteerIds.map((id) => mongoStore.getUserById(id))),
+      Promise.all(senderIds.map((id) => mongoStore.getUserById(id))),
+    ]);
+    const volunteerById = new Map(volunteers.filter(Boolean).map((user) => [user._id.toString(), user]));
+    const senderById = new Map(senders.filter(Boolean).map((user) => [user._id.toString(), user]));
+
+    return res.json({
+      messages: messages.map((message) => {
+        const volunteer = volunteerById.get(message.volunteerId);
+        const sender = senderById.get(message.senderId);
+
+        return {
+          id: message._id.toString(),
+          volunteerId: message.volunteerId,
+          volunteerName: volunteer ? volunteer.fullName : 'Unknown volunteer',
+          sender: sender ? sender.fullName : 'Former account',
+          senderRole: sender ? sender.role : null,
+          body: message.body,
+          createdAt: message.createdAt,
+        };
+      }),
+    });
+  })
+);
+
+router.get(
   '/messages',
   wrap(async (req, res) => {
     const volunteerId = req.user.isStaff ? req.query.volunteerId : req.user.id;
 
     if (typeof volunteerId !== 'string' || !mongoStore.toObjectId(volunteerId)) {
       return res.status(400).json({ error: 'Choose a volunteer.' });
+    }
+
+    if (req.user.isStaff) {
+      const volunteer = await mongoStore.getUserById(volunteerId);
+
+      if (!volunteer || volunteer.role !== 'volunteer') {
+        return res.status(404).json({ error: 'We could not find that volunteer.' });
+      }
     }
 
     const messages = await mongoStore.getCollection('messages')
@@ -103,6 +163,7 @@ router.get(
         id: message._id.toString(),
         body: message.body,
         sender: sender ? sender.fullName : null,
+        senderRole: sender ? sender.role : null,
         fromMe: message.senderId === req.user.id,
         createdAt: message.createdAt,
       };

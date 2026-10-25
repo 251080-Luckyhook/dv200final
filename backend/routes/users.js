@@ -3,7 +3,7 @@ const express = require('express');
 const mongoStore = require('../mongoStore');
 const wrap = require('../lib/wrap');
 const { STAFF_ROLES } = require('../lib/constants');
-const { requireAuth, requireStaff, requireAdmin } = require('../middleware/auth');
+const { requireAuth, requireStaff } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ router.use(requireAuth);
 
 router.get(
   '/accounts',
-  requireAdmin,
+  requireStaff,
   wrap(async (req, res) => {
     const search = String(req.query.search || '').trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const filter = {};
@@ -52,19 +52,23 @@ router.get(
       .toArray();
 
     return res.json({
-      volunteers: users.map((user) => ({ id: user._id.toString(), fullName: user.fullName })),
+      volunteers: users.map((user) => ({ id: user._id.toString(), fullName: user.fullName, role: user.role })),
     });
   })
 );
 
 router.patch(
   '/:id/role',
-  requireAdmin,
+  requireStaff,
   wrap(async (req, res) => {
     const { role } = req.body;
 
     if (role !== 'volunteer' && !STAFF_ROLES.includes(role)) {
       return res.status(400).json({ error: 'Choose a valid account role.' });
+    }
+
+    if (role === 'administrator' && req.user.role !== 'administrator') {
+      return res.status(403).json({ error: 'Only administrators can assign the administrator role.' });
     }
 
     if (req.params.id === req.user.id) {

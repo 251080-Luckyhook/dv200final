@@ -11,7 +11,9 @@ import PublicHome from './pages/PublicHome2.jsx';
 import VolunteerHome from './pages/VolunteerHome.jsx';
 import BookSession from './pages/BookSession.jsx';
 import MyVisits from './pages/MyVisits.jsx';
+import VolunteerMessages from './pages/VolunteerMessages.jsx';
 import StaffHome from './pages/StaffHome.jsx';
+import StaffMessages from './pages/StaffMessages.jsx';
 import VisualCalendar from './pages/VisualCalendar.jsx';
 import ShiftBoard from './pages/ShiftBoard.jsx';
 import ReportingHub from './pages/ReportingHub.jsx';
@@ -84,6 +86,8 @@ export default function App() {
 
           <Route path="/my-visits" element={<MyVisits />} />
 
+          <Route path="/messages" element={<VolunteerMessages />} />
+
           <Route path="/bookings" element={<BookSession />} />
 
           <Route path="/account" element={<SettingsPage initialTab="security" />} />
@@ -97,6 +101,8 @@ export default function App() {
           }
         >
           <Route path="/staff" element={<StaffHome />} />
+
+          <Route path="/staff/messages" element={<StaffMessages />} />
 
           <Route path="/staff/bookings" element={<VisualCalendar />} />
 
@@ -115,4 +121,3 @@ export default function App() {
     </>
   );
 }
-

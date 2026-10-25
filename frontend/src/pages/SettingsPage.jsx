@@ -227,13 +227,15 @@ function AccessTab() {
 
                 <span>{chosen.email}</span>
 
-                <small>This user currently has {ROLE_LABELS[chosen.role]} access</small>
+                <small>Current role: {ROLE_LABELS[chosen.role] || chosen.role}</small>
               </div>
             </div>
 
             <h3>Choose a role</h3>
 
-            <p className="muted-text">Choose whether this account has volunteer or staff access.</p>
+            <p className="muted-text">
+              Choose volunteer or staff access for this account. Only administrators can assign administrator access.
+            </p>
 
             <div className="role-list">
               <button
@@ -246,7 +248,7 @@ function AccessTab() {
                 <span>Volunteer</span>
               </button>
 
-              {STAFF_ROLES.map((item) => (
+              {STAFF_ROLES.filter((item) => currentUser.role === 'administrator' || item.key !== 'administrator').map((item) => (
                 <button
                   key={item.key}
                   type="button"
@@ -361,71 +363,75 @@ function SecurityTab() {
   }
 
   return (
-    <form onSubmit={save} className="security-form">
-      <section className="panel">
-        <h3 className="panel-title">Account information</h3>
+    <>
+      <form onSubmit={save} className="security-form">
+        <section className="panel">
+          <h3 className="panel-title">Account information</h3>
 
-        <div className="avatar-row">
-          {avatar ? (
-            <img src={avatar} alt="Your profile" className="avatar" />
-          ) : (
-            <span className="avatar placeholder">
-              <User size={32} />
-            </span>
-          )}
+          <div className="avatar-row">
+            {avatar ? (
+              <img src={avatar} alt="Your profile" className="avatar" />
+            ) : (
+              <span className="avatar placeholder">
+                <User size={32} />
+              </span>
+            )}
 
-          <button type="button" className="btn outline gold" onClick={() => fileInput.current.click()}>
-            Change profile picture
-          </button>
+            <button type="button" className="btn outline gold" onClick={() => fileInput.current.click()}>
+              Change profile picture
+            </button>
 
-          <input ref={fileInput} type="file" accept="image/*" hidden onChange={pickPicture} />
-        </div>
+            <input ref={fileInput} type="file" accept="image/*" hidden onChange={pickPicture} />
+          </div>
 
-        <div className="form-grid">
-          <label>
-            Full Name
-            <span className="input-icon left">
-              <User size={18} />
+          <div className="form-grid">
+            <label>
+              Full Name
+              <span className="input-icon left">
+                <User size={18} />
 
-              <input value={form.fullName} onChange={(event) => setForm({ ...form, fullName: event.target.value })} required />
-            </span>
-          </label>
+                <input value={form.fullName} onChange={(event) => setForm({ ...form, fullName: event.target.value })} required />
+              </span>
+            </label>
 
-          <label>
-            Email Address
-            <span className="input-icon left">
-              <Mail size={18} />
+            <label>
+              Email Address
+              <span className="input-icon left">
+                <Mail size={18} />
 
-              <input type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
-            </span>
-          </label>
+                <input type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
+              </span>
+            </label>
 
-          <label>
-            Phone Number
-            <input value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} placeholder="+27 12 345 6789" />
-          </label>
+            <label>
+              Phone Number
+              <input value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} placeholder="+27 12 345 6789" />
+            </label>
 
-          <label>
-            Role
-            <input value={ROLE_LABELS[user.role]} readOnly />
-          </label>
-        </div>
-      </section>
+            <label>
+              Role
+              <input value={ROLE_LABELS[user.role]} readOnly />
+            </label>
+          </div>
+        </section>
 
-      <section className="panel">
-        <h3 className="panel-title">Password</h3>
+        <section className="panel">
+          <h3 className="panel-title">Password</h3>
 
-        <PasswordField label="Change Password" value={password} onChange={setPassword} />
+          <PasswordField label="Change Password" value={password} onChange={setPassword} />
 
-        <PasswordField label="Confirm Password" value={confirm} onChange={setConfirm} />
-      </section>
+          <PasswordField label="Confirm Password" value={confirm} onChange={setConfirm} />
+        </section>
 
-      <Notice error={notice.error} message={notice.message} />
+        <Notice error={notice.error} message={notice.message} />
 
-      <button type="submit" className="btn primary wide-button">
-        Save Changes
-      </button>
-    </form>
+        <button type="submit" className="btn primary wide-button">
+          Save Changes
+        </button>
+      </form>
+
+      {user.isStaff && <AccessTab />}
+    </>
   );
 }
 
@@ -435,10 +441,6 @@ export default function SettingsPage({ staff, initialTab }) {
   const [tab, setTab] = useState(initialTab);
 
   const tabs = [{ key: 'general', label: 'General Settings' }];
-
-  if (staff && user.role === 'administrator') {
-    tabs.push({ key: 'access', label: 'Account Access' });
-  }
 
   tabs.push({ key: 'security', label: 'Security' });
 
@@ -455,13 +457,10 @@ export default function SettingsPage({ staff, initialTab }) {
       <section className="settings-card">
         <h2 className="settings-heading">
           {tab === 'general' && 'General settings'}
-          {tab === 'access' && 'Account access'}
           {tab === 'security' && 'Security'}
         </h2>
 
         {tab === 'general' && <GeneralTab staff={staff} />}
-
-        {tab === 'access' && <AccessTab />}
 
         {tab === 'security' && <SecurityTab />}
       </section>
