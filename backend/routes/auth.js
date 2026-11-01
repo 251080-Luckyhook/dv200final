@@ -10,7 +10,7 @@ const router = express.Router();
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-// Volunteers can create accounts with email and password; staff accounts are provisioned by an administrator.
+// Registration: volunteers can sign up here; an administrator creates staff accounts.
 router.post(
   '/register',
   wrap(async (req, res) => {
@@ -56,7 +56,7 @@ router.post(
   })
 );
 
-// Email or phone and password sign in volunteers and staff from the same form.
+// Login: find an account by email or phone, then check its saved password hash.
 router.post(
   '/login',
   wrap(async (req, res) => {
@@ -95,7 +95,7 @@ router.post(
   })
 );
 
-// Volunteers sign up and log in with Google
+// Google sign-in: check Google's credential before finding or creating the matching account.
 router.post(
   '/google',
   wrap(async (req, res) => {
@@ -160,7 +160,7 @@ router.post(
   })
 );
 
-// Staff log in with full name, phone or email, and password
+// Staff login: only accounts with a staff role can sign in through this route.
 router.post(
   '/admin-login',
   wrap(async (req, res) => {

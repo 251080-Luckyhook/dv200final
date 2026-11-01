@@ -24,48 +24,48 @@ export function addDays(iso, amount) {
   return toISO(date);
 }
 
-// "Tuesday, April 8"
+// Date label example: "Tuesday, April 8".
 export function formatLong(iso) {
   return fromISO(iso).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 }
 
-// "8 April 2025"
+// Date label example: "8 April 2025".
 export function formatWithYear(iso) {
   return fromISO(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-// "10 April"
+// Date label example: "10 April".
 export function formatShort(iso) {
   return fromISO(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
 }
 
-// "MON, FEB 16"
+// Calendar heading example: "MON, FEB 16".
 export function formatHeading(iso) {
   return fromISO(iso)
     .toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
     .toUpperCase();
 }
 
-// 9 -> "9:00am"
+// Time label example: 9 becomes "9:00am".
 export function hourLabel(hour) {
   const twelve = hour % 12 || 12;
 
   return `${twelve}:00${hour < 12 ? 'am' : 'pm'}`;
 }
 
-// 9 -> "9 AM"
+// Short time label example: 9 becomes "9 AM".
 export function hourChip(hour) {
   const twelve = hour % 12 || 12;
 
   return `${twelve} ${hour < 12 ? 'AM' : 'PM'}`;
 }
 
-// 9 -> "9:00am-10:00am"
+// Time slot example: 9 becomes "9:00am-10:00am".
 export function slotRange(hour) {
   return `${hourLabel(hour)}-${hourLabel(hour + 1)}`;
 }
 
-// Monday-to-Saturday strip for the week that contains the given date
+// Calendar week: return Monday to Saturday for the selected date's week.
 export function weekStrip(iso) {
   const date = fromISO(iso);
   const offset = (date.getDay() + 6) % 7;

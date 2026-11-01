@@ -21,6 +21,7 @@ export default function AnalyticsConsent() {
   const lastPageView = useRef(null);
   const pagePath = `${location.pathname}${location.search}${location.hash}`;
 
+  // Google Analytics: count each page when consent is given, including React route changes.
   useEffect(() => {
     if (consent !== 'granted' || lastPageView.current === pagePath || typeof window.gtag !== 'function') {
       return;
@@ -34,6 +35,7 @@ export default function AnalyticsConsent() {
     });
   }, [consent, pagePath]);
 
+  // Consent: save the visitor's choice and update Google Analytics.
   function chooseConsent(choice) {
     try {
       localStorage.setItem(CONSENT_KEY, choice);

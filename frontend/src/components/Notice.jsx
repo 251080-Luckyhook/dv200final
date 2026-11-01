@@ -1,4 +1,4 @@
-// Small inline success / error message
+// Show a short success or error message beside the form.
 export default function Notice({ error, message }) {
   if (!error && !message) {
     return null;

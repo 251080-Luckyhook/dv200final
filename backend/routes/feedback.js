@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.use(requireAuth);
 
-// Feedback a volunteer has received from staff
+// Feedback (Read): show the signed-in volunteer's latest notes from staff.
 router.get(
   '/mine',
   wrap(async (req, res) => {
@@ -33,7 +33,7 @@ router.get(
   })
 );
 
-// Staff write feedback for a volunteer
+// Feedback (Create): staff can leave a note on a volunteer's account.
 router.post(
   '/',
   requireStaff,
@@ -61,7 +61,7 @@ router.post(
   })
 );
 
-// Messages: volunteers write to staff, staff write to a volunteer
+// Messages (Create): volunteers message staff, and staff can message a volunteer.
 router.post(
   '/messages',
   wrap(async (req, res) => {

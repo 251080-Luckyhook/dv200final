@@ -16,7 +16,7 @@ if (!process.env.JWT_SECRET) {
 
 const app = express();
 
-// Google sign-in opens a popup, so the opener policy has to allow popups
+// Google sign-in uses a popup, so this policy lets it talk to the main page.
 app.use(
   helmet({
     contentSecurityPolicy: false,
@@ -24,6 +24,7 @@ app.use(
   })
 );
 
+// CORS controls which browser pages can call this API; this setup has no origin list.
 app.use(cors());
 
 app.use(express.json({ limit: '1mb' }));
@@ -47,7 +48,7 @@ app.use('/api', (req, res) => {
   res.status(404).json({ error: 'That endpoint does not exist.' });
 });
 
-// In production the Express server also serves the built React app
+// In production, Express serves the built React app as well as the API.
 const frontendBuild = path.join(__dirname, '..', 'frontend', 'dist');
 
 if (fs.existsSync(frontendBuild)) {

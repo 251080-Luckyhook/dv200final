@@ -6,6 +6,7 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
+      // Local development: send API requests to the Express server.
       '/api': 'http://localhost:5000',
     },
   },

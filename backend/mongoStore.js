@@ -3,6 +3,7 @@ const { MongoClient, ObjectId } = require('mongodb');
 let client;
 let database;
 
+// MongoDB collections hold app records; this project does not use MySQL tables.
 function getCollection(name) {
   if (!database) {
     throw new Error('MongoDB has not been connected.');
@@ -28,6 +29,7 @@ async function connectMongo() {
   await client.connect();
   database = client.db(process.env.MONGODB_DB || 'ngwana_huis');
 
+  // Indexes speed up common lookups; unique user indexes prevent duplicate emails and Google IDs.
   await Promise.all([
     getCollection('users').createIndexes([
       { key: { email: 1 }, unique: true, sparse: true },

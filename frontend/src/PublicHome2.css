@@ -1,4 +1,4 @@
-/* Landing page – only used by pages/PublicHome.jsx */
+/* Styles for the public welcome page. */
 
 .welcome {
   min-height: 100vh;
@@ -6,8 +6,7 @@
   justify-content: center;
   padding: clamp(48px, 13vh, 150px) 24px 0;
 
-  /* Colour first, image on top. The image is optional: if the file is missing
-     the page just shows the cream colour. */
+  /* The cream colour stays visible if the background image cannot load. */
   background-color: var(--cream);
   background-image: url('/main%20bg.png');
   background-repeat: no-repeat;
@@ -85,7 +84,7 @@
 @media (max-width: 640px) {
   .welcome {
     padding-top: 56px;
-    /* keep the kids visible on tall phone screens */
+    /* Keep the background image visible on tall phone screens. */
     background-size: auto 55%;
   }
 }

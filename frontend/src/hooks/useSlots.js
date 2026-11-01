@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { api } from '../api.js';
 
-// Loads the hourly slots (and daily capacity) for one date
+// Booking slots: load availability and capacity for the selected date.
 export default function useSlots(date) {
   const [data, setData] = useState({ slots: [], capacity: { booked: 0, total: 0, percent: 0 } });
   const [loading, setLoading] = useState(true);

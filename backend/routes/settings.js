@@ -54,7 +54,7 @@ router.put(
   })
 );
 
-// Reduced capacity takes one spot off every slot
+// Reduced capacity: staff can lower the limit by one for every time slot.
 router.put(
   '/app',
   requireStaff,

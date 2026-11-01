@@ -10,7 +10,7 @@ export default function MonthCalendar({ value, onChange, minDate }) {
 
   const [cursor, setCursor] = useState(new Date(selected.getFullYear(), selected.getMonth(), 1));
 
-  // Keep the visible month in step when the selected date moves to another month
+  // Calendar month: show the selected date's month when the date changes.
   useEffect(() => {
     setCursor(new Date(selected.getFullYear(), selected.getMonth(), 1));
   }, [value]);

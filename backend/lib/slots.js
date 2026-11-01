@@ -11,7 +11,7 @@ async function isReducedCapacity() {
   return result?.value === true;
 }
 
-// Builds the list of hourly slots for a date, with booked counts and a status for each one
+// Slot availability: count active bookings, apply staff overrides, then mark each hour.
 async function getSlotsForDate(date) {
   const [overrideResult, countResult, reduced] = await Promise.all([
     mongoStore.getCollection('slotOverrides').find({ date }).toArray(),

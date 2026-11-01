@@ -1,6 +1,6 @@
 const TIMEZONE = process.env.APP_TIMEZONE || 'Africa/Johannesburg';
 
-// Returns today's date as YYYY-MM-DD in the app's timezone
+// Use the app's timezone so the server and visit schedule agree on today's date.
 function todayISO() {
   return new Date().toLocaleDateString('en-CA', { timeZone: TIMEZONE });
 }

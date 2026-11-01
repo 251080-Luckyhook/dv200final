@@ -1,3 +1,4 @@
+// API connection: use the configured server URL, or /api when both apps share a host.
 const BASE = import.meta.env.VITE_API_URL || '/api';
 
 const TOKEN_KEY = 'nh_token';

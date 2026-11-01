@@ -26,7 +26,7 @@ async function mapBookingWithUser(booking) {
   return mapBooking(booking, user);
 }
 
-// Create a booking
+// Booking (Create): check the visit details and availability before saving to MongoDB.
 router.post(
   '/',
   wrap(async (req, res) => {
@@ -85,7 +85,7 @@ router.post(
   })
 );
 
-// The signed-in volunteer's own bookings
+// Booking (Read): return only visits that belong to the signed-in volunteer.
 router.get(
   '/mine',
   wrap(async (req, res) => {
@@ -98,7 +98,7 @@ router.get(
   })
 );
 
-// Total hours and hours per activity for the signed-in volunteer
+// Booking history: add up this volunteer's completed hours by activity.
 router.get(
   '/history',
   wrap(async (req, res) => {
@@ -121,7 +121,7 @@ router.get(
   })
 );
 
-// Today's schedule for staff
+// Staff schedule (Read): staff can view bookings for today or another valid date.
 router.get(
   '/today',
   requireStaff,
@@ -136,7 +136,7 @@ router.get(
   })
 );
 
-// Reschedule one of your own bookings
+// Booking (Update): volunteers can move their own visit to an available time.
 router.patch(
   '/:id/reschedule',
   wrap(async (req, res) => {
@@ -182,7 +182,7 @@ router.patch(
   })
 );
 
-// Cancel one of your own bookings
+// Booking (Delete): mark the visit as cancelled instead of removing its record.
 router.delete(
   '/:id',
   wrap(async (req, res) => {
@@ -198,7 +198,7 @@ router.delete(
   })
 );
 
-// Tell staff you are running late
+// Late arrival: let staff know when a volunteer expects to be late.
 router.post(
   '/:id/late',
   wrap(async (req, res) => {
@@ -218,7 +218,7 @@ router.post(
   })
 );
 
-// Volunteer checks themselves in (only on the day of the visit)
+// Check-in: a volunteer can mark their visit as arrived on the booked day.
 router.post(
   '/:id/check-in',
   wrap(async (req, res) => {
@@ -242,7 +242,7 @@ router.post(
   })
 );
 
-// Staff update a volunteer's status (expected, arrived, late, checked_out)
+// Staff-only status update: requireStaff checks access on the API, not just the page.
 router.patch(
   '/:id/status',
   requireStaff,

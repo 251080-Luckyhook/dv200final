@@ -1,4 +1,4 @@
-// Lets async route handlers throw errors without needing try/catch in every route
+// Pass errors from async routes to Express's error handler.
 module.exports = (handler) => (req, res, next) => {
   Promise.resolve(handler(req, res, next)).catch(next);
 };

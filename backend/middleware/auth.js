@@ -6,6 +6,7 @@ function signToken(user) {
   return jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 }
 
+// JWT authentication: check the token, then load the current account from MongoDB.
 async function requireAuth(req, res, next) {
   const header = req.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
@@ -36,6 +37,7 @@ async function requireAuth(req, res, next) {
   }
 }
 
+// Staff role check: stop non-staff accounts from using protected API routes.
 function requireStaff(req, res, next) {
   if (!req.user || !req.user.isStaff) {
     return res.status(403).json({ error: 'Staff access is required.' });
@@ -44,6 +46,7 @@ function requireStaff(req, res, next) {
   return next();
 }
 
+// Admin role check: only administrator accounts can continue.
 function requireAdmin(req, res, next) {
   if (!req.user || req.user.role !== 'administrator') {
     return res.status(403).json({ error: 'Administrator access is required.' });
